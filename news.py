@@ -1,34 +1,35 @@
+#!/usr/bin/env python3
+
 import psycopg2
-import datetime
 
 con = psycopg2.connect(database='news')
 
-select_stmt_1 = (
-    "SELECT articles.title, COUNT(*) AS num "
-    "FROM articles, log "
-    "WHERE log.path LIKE '%' || articles.slug || '%' "
-        "AND log.status like '%200%' "
-    "GROUP BY  articles.title "
-    "ORDER BY num DESC "
-    "LIMIT 3;"
-)
+select_stmt_1 = """
+    SELECT articles.title, COUNT(*) AS num
+    FROM articles, log
+    WHERE log.path LIKE '%' || articles.slug || '%'
+        AND log.status like '%200%'
+    GROUP BY  articles.title
+    ORDER BY num DESC
+    LIMIT 3;
+"""
 
-select_stmt_2 = (
-    "SELECT authors.name, COUNT(*) AS num "
-    "FROM authors, articles, log "
-    "WHERE log.path LIKE '%' || articles.slug || '%' "
-        "AND log.status LIKE '%200%' "
-        "AND articles.author = authors.id "
-    "GROUP BY authors.name "
-    "ORDER BY num DESC"
-)
+select_stmt_2 = """
+    SELECT authors.name, COUNT(*) AS num
+    FROM authors, articles, log
+    WHERE log.path LIKE '%' || articles.slug || '%'
+        AND log.status LIKE '%200%'
+        AND articles.author = authors.id
+    GROUP BY authors.name
+    ORDER BY num DESC
+"""
 
-select_stmt_3 = (
-    "SELECT TO_CHAR(date_trunc('day', time), 'DD Month, YYYY') AS day, ROUND(((COUNT(CASE WHEN status = '404 NOT FOUND' THEN status END)::numeric / COUNT(status)::numeric) * 100), 2) AS errorPerc "
-    "FROM log "
-    "GROUP BY day "
-    "HAVING (ROUND(((COUNT(CASE WHEN status = '404 NOT FOUND' THEN status END)::numeric / COUNT(status)::numeric) * 100), 2)) > 1.00"
-)
+select_stmt_3 = """
+    SELECT TO_CHAR(date_trunc('day', time), 'DD Month, YYYY') AS day, ROUND(((COUNT(CASE WHEN status = '404 NOT FOUND' THEN status END)::numeric / COUNT(status)::numeric) * 100), 2) AS errorPerc
+    FROM log
+    GROUP BY day
+    HAVING (ROUND(((COUNT(CASE WHEN status = '404 NOT FOUND' THEN status END)::numeric / COUNT(status)::numeric) * 100), 2)) > 1.00
+"""
 
 with con:
 
