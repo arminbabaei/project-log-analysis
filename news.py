@@ -7,7 +7,7 @@ con = psycopg2.connect(database='news')
 select_stmt_1 = """
     SELECT articles.title, COUNT(*) AS num
     FROM articles, log
-    WHERE log.path LIKE '%' || articles.slug || '%'
+    WHERE log.path = '/article/' || articles.slug
         AND log.status like '%200%'
     GROUP BY  articles.title
     ORDER BY num DESC
@@ -17,7 +17,7 @@ select_stmt_1 = """
 select_stmt_2 = """
     SELECT authors.name, COUNT(*) AS num
     FROM authors, articles, log
-    WHERE log.path LIKE '%' || articles.slug || '%'
+    WHERE log.path = '/article/' || articles.slug
         AND log.status LIKE '%200%'
         AND articles.author = authors.id
     GROUP BY authors.name
