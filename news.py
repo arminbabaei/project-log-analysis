@@ -25,7 +25,7 @@ select_stmt_2 = """
 """
 
 select_stmt_3 = """
-    SELECT TO_CHAR(date_trunc('day', time), 'DD Month, YYYY') AS day, ROUND(((COUNT(CASE WHEN status = '404 NOT FOUND' THEN status END)::numeric / COUNT(status)::numeric) * 100), 2) AS errorPerc
+    SELECT to_char(date_trunc('day', time), 'FMMonth DD, YYYY') AS day, ROUND(((COUNT(CASE WHEN status = '404 NOT FOUND' THEN status END)::numeric / COUNT(status)::numeric) * 100), 2) AS errorPerc
     FROM log
     GROUP BY day
     HAVING (ROUND(((COUNT(CASE WHEN status = '404 NOT FOUND' THEN status END)::numeric / COUNT(status)::numeric) * 100), 2)) > 1.00
